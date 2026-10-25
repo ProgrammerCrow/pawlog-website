@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PawLog — Digital Pet Passport, Health & Vaccine Tracker</title>
+  <meta name="description" content="The caring all-in-one digital pet passport. Track vaccines, medications, weight, food safety, vet visits, and expenses for your cats and dogs.">
+  <link rel="icon" type="image/png" href="assets/app_logo.png">
+  <link rel="apple-touch-icon" href="assets/app_logo.png">
+  
+  <!-- OpenGraph / Social Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PawLog — Digital Pet Passport & Health Companion">
+  <meta property="og:description" content="Never miss a vaccine, check food toxicity instantly, and keep your furry friend's complete medical history in your pocket.">
+  <meta property="og:image" content="assets/app_logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #090E17;
+      --card-bg: rgba(22, 30, 46, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --accent-coral: #FF655B;
+      --accent-mint: #10B981;
+      --accent-amber: #FFB340;
+      --accent-gradient: linear-gradient(135deg, #FF655B 0%, #FFB340 50%, #10B981 100%);
+      --card-gradient: linear-gradient(180deg, rgba(30, 41, 64, 0.6) 0%, rgba(15, 23, 38, 0.8) 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Lighting */
+    .glow-circle {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .glow-1 {
+      width: 650px; height: 650px; top: -200px; left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(255, 101, 91, 0.18) 0%, rgba(16, 185, 129, 0.08) 50%, transparent 70%);
+    }
+    .glow-2 {
+      width: 520px; height: 520px; bottom: 20%; right: -120px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, transparent 70%);
+    }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+    /* Header & Navigation */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9, 14, 23, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-wrapper {
+      height: 72px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;
+    }
+    .brand-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(255, 101, 91, 0.35);
+    }
+    .brand-name {
+      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--accent-mint); }
+
+    /* Hero Section */
+    .hero {
+      padding-top: 140px; padding-bottom: 70px; text-align: center;
+    }
+    .pill-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px; border-radius: 9999px;
+      background: rgba(255, 101, 91, 0.08);
+      border: 1px solid rgba(255, 101, 91, 0.25);
+      color: var(--accent-coral); font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+    .hero h1 {
+      font-size: clamp(2.3rem, 5.2vw, 4.0rem);
+      font-weight: 900; letter-spacing: -1.6px; line-height: 1.15;
+      max-width: 900px; margin: 0 auto 20px;
+    }
+    .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.18rem; color: var(--text-muted);
+      max-width: 680px; margin: 0 auto 36px;
+    }
+
+    .cta-row {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      flex-wrap: wrap; margin-bottom: 60px;
+    }
+    .appstore-badge {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 12px 28px; border-radius: 16px;
+      background: #000; border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff; text-decoration: none; font-weight: 700;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .appstore-badge:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-coral);
+    }
+    .appstore-badge svg { width: 26px; height: 26px; fill: currentColor; }
+    .appstore-text { text-align: left; }
+    .appstore-text span { display: block; font-size: 0.72rem; font-weight: 500; opacity: 0.8; }
+    .appstore-text strong { display: block; font-size: 1.1rem; line-height: 1.1; }
+
+    /* Hero Showcase Mockup */
+    .hero-showcase {
+      display: flex; justify-content: center; align-items: center; gap: 24px;
+      margin-top: 20px; margin-bottom: 80px;
+      flex-wrap: wrap;
+    }
+    .screen-card {
+      width: 280px;
+      border-radius: 36px;
+      border: 2px solid var(--card-border);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 101, 91, 0.15);
+      background: #000;
+      transition: transform 0.3s ease;
+    }
+    .screen-card:hover {
+      transform: translateY(-6px);
+    }
+    .screen-card.hero-center {
+      width: 310px;
+      border-color: rgba(255, 101, 91, 0.35);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 50px rgba(255, 101, 91, 0.25);
+    }
+    .screen-card img {
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    /* Section Headers */
+    .section-title-wrap {
+      text-align: center; margin-bottom: 50px;
+    }
+    .section-title-wrap h2 {
+      font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px;
+    }
+    .section-title-wrap p {
+      color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;
+    }
+
+    /* Feature Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 100px;
+    }
+    .feature-card {
+      background: var(--card-gradient);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(255, 101, 91, 0.4);
+      transform: translateY(-4px);
+    }
+    .feature-icon-wrap {
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin-bottom: 20px;
+    }
+    .f-coral { background: rgba(255, 101, 91, 0.15); }
+    .f-mint { background: rgba(16, 185, 129, 0.15); }
+    .f-amber { background: rgba(255, 179, 64, 0.15); }
+
+    .feature-card h3 {
+      font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.4px;
+    }
+    .feature-card p {
+      color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;
+    }
+
+    /* Privacy Banner Callout */
+    .privacy-callout {
+      background: linear-gradient(135deg, rgba(22, 30, 46, 0.95) 0%, rgba(16, 185, 129, 0.12) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 28px;
+      padding: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 100px;
+      flex-wrap: wrap;
+    }
+    .privacy-text h3 {
+      font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;
+    }
+    .privacy-text p {
+      color: var(--text-muted); font-size: 1.05rem; max-width: 600px;
+    }
+    .privacy-btn {
+      padding: 14px 28px; border-radius: 14px;
+      background: var(--accent-mint); color: #090E17;
+      text-decoration: none; font-weight: 800; font-size: 0.95rem;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      white-space: nowrap;
+    }
+    .privacy-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .footer-links {
+      display: flex; justify-content: center; gap: 24px; margin-bottom: 16px;
+    }
+    .footer-links a {
+      color: var(--text-muted); text-decoration: none; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+
+    @media (max-width: 768px) {
+      .hero-showcase { gap: 16px; }
+      .screen-card { width: 260px; }
+      .screen-card.hero-center { width: 280px; }
+      .privacy-callout { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-circle glow-1"></div>
+  <div class="glow-circle glow-2"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand">
+        <img src="assets/app_logo.png" alt="PawLog Logo" class="brand-icon">
+        <span class="brand-name">PawLog</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#food-safety">Food Safety</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="mailto:turkmendigital@gmail.com">Support</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="pill-badge">
+        🐾 All-in-One Digital Pet Passport
+      </div>
+      <h1>
+        Everything Your Furry Friend Needs.<br>
+        <span class="gradient-text">In One Caring Journal.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Never miss a crucial vaccine, check toxic foods in seconds, manage daily medications and weight, and keep your pet's complete medical history in your pocket.
+      </p>
+
+      <div class="cta-row">
+        <a href="#" class="appstore-badge">
+          <svg viewBox="0 0 384 512">
+            <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+          </svg>
+          <div class="appstore-text">
+            <span>Download on the</span>
+            <strong>App Store</strong>
+          </div>
+        </a>
+      </div>
+
+      <!-- App Mockup Showcase -->
+      <div class="hero-showcase">
+        <div class="screen-card">
+          <img src="assets/screen_vaccines.png" alt="PawLog Vaccine Calendar">
+        </div>
+        <div class="screen-card hero-center">
+          <img src="assets/screen_home.png" alt="PawLog Digital Passport Home">
+        </div>
+        <div class="screen-card">
+          <img src="assets/screen_foods.png" alt="PawLog Food Safety Guide">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="container">
+    <div class="section-title-wrap">
+      <h2>Crafted with Love for Dogs & Cats</h2>
+      <p>A comprehensive toolkit designed by devoted pet parents to keep your companions healthy, active, and happy.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap f-coral">📘</div>
+        <h3>Digital Passport & ID Card</h3>
+        <p>Keep microchip numbers, breed, birthdates, and neuter status organized. PawLog automatically calculates your pet's age in human years and offers one-tap speed dial to your vet.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap f-mint">💉</div>
+        <h3>Smart Vaccine Reminders</h3>
+        <p>Complete schedules for Rabies, FVRCP, FeLV, DHPP, and parasite treatments with clear color-coded status badges (Upcoming, Completed, Overdue) and timely local alerts.</p>
+      </div>
+
+      <div class="feature-card" id="food-safety">
+        <div class="feature-icon-wrap f-amber">🥦</div>
+        <h3>"Can My Pet Eat This?" Directory</h3>
+        <p>Instant safety search for common foods. Filter by dogs or cats to see Safe, Caution, and Toxic ratings with symptoms of poisoning and veterinary advice.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap f-coral">🩺</div>
+        <h3>Clinic Visits & Active Medications</h3>
+        <p>Log medical diagnoses, veterinary visits, active prescription dosages, and hourly or daily reminder schedules so treatments are never forgotten.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap f-mint">⚖️</div>
+        <h3>Weight Tracker & History</h3>
+        <p>Track your pet's growth milestones and body weight trends. Spot health issues early and maintain your pet's ideal body condition.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap f-amber">✂️</div>
+        <h3>Care Routines & Expense Budget</h3>
+        <p>Manage daily fur brushing, nail trimming, ear cleaning, and track spending on food, litter, toys, and veterinary care with breakdown charts.</p>
+      </div>
+    </div>
+
+    <!-- Privacy Callout -->
+    <div class="privacy-callout">
+      <div class="privacy-text">
+        <h3>🔒 100% Private & Offline Ready</h3>
+        <p>No mandatory accounts. Your pet's medical records stay securely on your device. Export and backup your entire history in one tap whenever you want.</p>
+      </div>
+      <a href="privacy.html" class="privacy-btn">Read Privacy Policy</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="#features">Features</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="mailto:turkmendigital@gmail.com">Contact Support</a>
+      </div>
+      <p>© 2026 Turkmen Digital. All rights reserved. PawLog is a trademark of Turkmen Digital.</p>
+    </div>
+  </footer>
+</body>
+</html>
